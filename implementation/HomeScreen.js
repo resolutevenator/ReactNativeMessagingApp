@@ -10,18 +10,14 @@ class HomeScreen extends React.Component {
         <View style={styles.container}>
             <Button
                 onPress={ () => {
-                    this.props.navigation.navigate('Profile', {
-                    username: this.state.text,
-                    });
+                    this.props.navigation.navigate('Login');
                 } }
-                title='Sign In'
+                title='Login'
                 color="#841584"
             />
             <Button
                 onPress={ () => {
-                    this.props.navigation.navigate('Profile', {
-                    username: this.state.text,
-                    });
+                    this.props.navigation.push('Register');
                 } }
                 title='Register'
                 color="#841584"
