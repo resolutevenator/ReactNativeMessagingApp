@@ -3,11 +3,30 @@ import {Platform, StyleSheet, Text, View, TextInput, Button} from 'react-native'
 
 class RegisterScreen extends React.Component {
     static navigationOptions = {
-        headerTitle: 'Message App 5000'
-      };    
+      headerTitle: 'Register'
+    }; 
+    constructor(props) {
+      super(props);
+      this.state = { 
+        userEmail: '',
+        userPassword: '',
+     }
+    }   
     render() {
-      return (        
-        <Text style={styles.welcome}>SWEN325 Assignment 2 Register</Text>
+      return (
+      <View style={styles.container}>      
+        <TextInput style={styles.input} placeholder='Email'
+          onChangeText={ (userEmail) => this.setState({userEmail}) }/>
+        <TextInput style={styles.input} placeholder='Password'
+          onChangeText={ (userPassword) => this.setState({userPassword}) }/>
+        <Button
+          onPress={ () => {
+            this.props.navigation.push('Splash');
+          } }
+          title='Register'
+          color='#841584'
+        />
+      </View>
       );
     }
   }
@@ -15,9 +34,11 @@ class RegisterScreen extends React.Component {
   export default RegisterScreen;
 
   const styles = StyleSheet.create({
-    welcome: {
-      fontSize: 20,
-      textAlign: 'center',
-      margin: 10,
+    container: {
+      flex: 1,
+      backgroundColor: '#F5FCFF',
     },
+    input: {
+
+    }
   });

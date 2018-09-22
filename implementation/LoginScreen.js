@@ -3,11 +3,30 @@ import {Platform, StyleSheet, Text, View, TextInput, Button} from 'react-native'
 
 class LoginScreen extends React.Component {
     static navigationOptions = {
-        headerTitle: 'Message App 5000'
-      };    
+      headerTitle: 'Login'
+    };
+    constructor(props) {
+      super(props);
+      this.state = { 
+        userEmail: '',
+        userPassword: '',
+     }
+    }     
     render() {
       return (        
-        <Text style={styles.welcome}>SWEN325 Assignment 2 Login</Text>
+        <View style={styles.container}>      
+          <TextInput style={styles.input} placeholder='Email'
+            onChangeText={ (userEmail) => this.setState({userEmail}) }/>
+          <TextInput style={styles.input} placeholder='Password'
+            onChangeText={ (userPassword) => this.setState({userPassword}) }/>
+          <Button
+            onPress={ () => {
+              this.props.navigation.push('Splash');
+            } }
+            title='Login'
+            color='#841584'
+          />
+        </View>
       );
     }
   }
