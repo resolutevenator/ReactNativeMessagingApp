@@ -16,12 +16,16 @@ class LoginScreen extends React.Component {
       return (        
         <View style={styles.container}>      
           <TextInput style={styles.input} placeholder='Email'
-            onChangeText={ (userEmail) => this.setState({userEmail}) }/>
+            onChangeText={ (userEmail) => this.setState({userEmail}) }
+            value={this.state.userEmail}/>
           <TextInput style={styles.input} placeholder='Password'
-            onChangeText={ (userPassword) => this.setState({userPassword}) }/>
+            onChangeText={ (userPassword) => this.setState({userPassword}) }
+            value={this.state.userPassword}/>
           <Button
             onPress={ () => {
-              this.props.navigation.push('Splash');
+              this.props.navigation.push('Splash', {
+                username: this.state.userEmail
+              });
             } }
             title='Login'
             color='#841584'

@@ -1,11 +1,3 @@
-android/
-ios/
-node_modules/
-.babelrc
-.buckconfig
-.flowconfig
-.watchmanconfig
-
 # OSX
 #
 .DS_Store
