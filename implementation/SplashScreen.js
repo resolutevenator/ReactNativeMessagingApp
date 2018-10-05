@@ -1,27 +1,50 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TextInput, Button, ListView, TouchableHighlight} from 'react-native';
+import {Platform, StyleSheet, Text, View, ListView, TouchableHighlight, Image, Alert} from 'react-native';
 import { firebaseApp } from './FirebaseApp';
+import styles from './SplashStyles';
 
 class SplashPage extends React.Component {
+    static navigationOptions = ({navigation}) => {
+
+      return {
+      headerTitle: 'Message App 5000',
+      headerLeft: null,
+      headerRight: (
+        <TouchableHighlight
+          onPress={() => navigation.push('CreateChannel')}>
+          <View>
+            <Image
+              source={require('./add.png')}
+              style={{width: 20, height: 20, marginRight: 20}}
+            />
+          </View>
+        </TouchableHighlight>
+      )};
+      
+    };  
+
     constructor(props) {
       super(props);
       let cs = new ListView.DataSource({rowHasChanged:(r1, r2) => r1 !== r2});
-      this.state = { 
-        username: '',
-        channelSource: cs 
+      this.state = {
+        channelSource: cs,
+        dialogVisible: false,
       };
       this.channelsRef = this.getRef().child('channels');
       this.renderRow = this.renderRow.bind(this);
       this.pressRow = this.pressRow.bind(this);
+      this.createChannel = this.createChannel.bind(this);
+    }
+
+    createChannel() {
+      this.props.navigation.push('CreateChannel');
     }
 
     getRef() {
       return firebaseApp.database().ref();
     }
 
-    componentWillMount() { 
-      const username = this.props.navigation.getParam('username', 'username');
-      this.setState({username});
+    componentWillMount() {
       this.getChannels(this.channelsRef);
     }
 
@@ -43,7 +66,7 @@ class SplashPage extends React.Component {
       return(
         <TouchableHighlight onPress={() => {
           this.pressRow(item);
-        }}>
+          }}>
           <View style={styles.listChannels}>
             <Text style={styles.channelName}>{item.title}</Text>
           </View>
@@ -55,17 +78,9 @@ class SplashPage extends React.Component {
       console.log(item);
       this.props.navigation.navigate('Channel', {
         channelName: item.title,
-        username: this.state.username,
-        navigationOptions: {
-          headerTitle: item.title
-        }
       });
     }
-
-    static navigationOptions = {
-      headerTitle: 'Message App 5000',
-      headerLeft: null
-    };    
+ 
     render() {
       return (
         <View style={styles.container}>
@@ -78,30 +93,3 @@ class SplashPage extends React.Component {
   }
 
   export default SplashPage;
-
-  const styles = StyleSheet.create({
-    welcome: {
-      fontSize: 20,
-      textAlign: 'center',
-      margin: 10,
-    },
-    listView: {
-      flex: 1
-    },
-    listChannels: {
-      backgroundColor: '#fff',
-      borderBottomColor: '#eee',
-      borderColor: 'transparent',
-      borderWidth: 1,
-      paddingLeft: 16,
-      paddingTop: 14,
-      paddingBottom: 16,
-    }, 
-    channelName: {
-      color: '#333',
-      fontSize: 16,
-    },
-    liContainer: {
-      flex: 2
-    },
-  });

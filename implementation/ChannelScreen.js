@@ -1,8 +1,14 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TextInput, Button, ListView, ScrollView} from 'react-native';
 import { firebaseApp } from './FirebaseApp';
+import styles from './ChannelStyles';
 
 class ChannelPage extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam('channelName', 'channel')
+    };
+  };
   constructor(props) {
     super(props);
     let ms = new ListView.DataSource({rowHasChanged:(r1, r2) => r1 !== r2});
@@ -15,20 +21,21 @@ class ChannelPage extends React.Component {
     this.messageRef = this.getRef().child('messages/' + this.getChannelName());
     this.renderRow = this.renderRow.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.scrollToEndOnNewMessage = this.scrollToEndOnNewMessage.bind(this);
   }
 
   getRef() {
     return firebaseApp.database().ref();
   }
 
-  // static navigationOptions = this.props.navigation.getParam('navigationOptions', 'navigationOptions');
-  // TODO: Implement header bar for channels
-
   componentWillMount() {
     const channelName = this.props.navigation.getParam('channelName', 'channelName');
-    const username = this.props.navigation.getParam('username', 'username');
+    const username = firebaseApp.auth().currentUser.email;
     this.setState({channelName, username});
     this.getMessages(this.messageRef);
+  }
+
+  componentDidMount() {
   }
 
   getMessages(messageRef) {
@@ -78,10 +85,19 @@ class ChannelPage extends React.Component {
     }
   }
 
+  scrollToEndOnNewMessage() {
+    this.scrollView.scrollToEnd({animated: false});
+  }
+
+  sendButtonDisabled() {
+    return this.state.message == '';
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView ref={ref => this.scrollView = ref}
+          onContentSizeChange={this.scrollToEndOnNewMessage}>
           <ListView
               dataSource={this.state.messageSource}
               renderRow={this.renderRow}/>
@@ -95,52 +111,11 @@ class ChannelPage extends React.Component {
         <Button
           onPress={this.sendMessage}
           title='Send'
-          color='#841584'/>
+          color='#4286f4'
+          disabled={this.sendButtonDisabled()}/>
       </View>
     );
   }
 }
 
 export default ChannelPage;
-
-const styles = StyleSheet.create({
-  container:  {
-    flex: 1,
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  messages: {    
-    backgroundColor: '#bfbfbf',
-    borderBottomColor: '#eee',
-    borderColor: 'transparent',
-    borderWidth: 1,
-    paddingLeft: 16,
-    paddingTop: 14,
-    paddingBottom: 16,
-  },
-  messagesAlt: {    
-    backgroundColor: '#00cc00',
-    borderBottomColor: '#eee',
-    borderColor: 'transparent',
-    borderWidth: 1,
-    paddingRight: 16,
-    paddingTop: 14,
-    paddingBottom: 16,
-  },
-  username: {
-
-  },
-  usernameAlt: {
-    textAlign: 'right',
-  },
-  userMessage: {
-
-  },
-  userMessageAlt: {
-    textAlign: 'right',
-  }
-
-});
